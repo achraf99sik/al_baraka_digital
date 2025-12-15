@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="003-create-operation" author="achraf">
+        <createTable tableName="operations">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="amount" type="DECIMAL(15,2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="validated_at" type="TIMESTAMP"/>
+
+            <column name="executed_at" type="TIMESTAMP"/>
+
+            <column name="account_source_id" type="UUID">
+                <constraints nullable="false"
+                             foreignKeyName="fk_operation_account_source"
+                             referencedTableName="accounts"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="account_destination_id" type="UUID">
+                <constraints nullable="true"
+                             foreignKeyName="fk_operation_account_destination"
+                             referencedTableName="accounts"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
