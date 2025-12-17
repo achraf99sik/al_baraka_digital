@@ -2,10 +2,12 @@ package com.al_baraka_digital.Baraka.model;
 
 import com.al_baraka_digital.Baraka.enums.Role;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
 @Entity
 @Table(name = "users")
 public class User {
