@@ -3,19 +3,25 @@ package com.al_baraka_digital.Baraka.model;
 import com.al_baraka_digital.Baraka.enums.OperationStatus;
 import com.al_baraka_digital.Baraka.enums.OperationType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "operations")
 public class Operation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "UUID")
     private UUID id;
 
@@ -30,28 +36,20 @@ public class Operation {
     @Column(nullable = false)
     private OperationStatus status;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-
-    @Column(name = "validated_at")
     private LocalDateTime validatedAt;
-
-    @Column(name = "executed_at")
     private LocalDateTime executedAt;
 
     @ManyToOne
-    @JoinColumn(name = "account_source_id", nullable = false)
+    @JoinColumn(name = "account_source_id")
     private Account accountSource;
 
     @ManyToOne
     @JoinColumn(name = "account_destination_id")
     private Account accountDestination;
 
-    @OneToOne(mappedBy = "operation", cascade = CascadeType.ALL)
-    private Document document;
-
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
     }
 }
