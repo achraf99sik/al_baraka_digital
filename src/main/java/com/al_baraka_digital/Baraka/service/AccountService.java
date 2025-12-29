@@ -2,7 +2,6 @@ package com.al_baraka_digital.Baraka.service;
 
 import com.al_baraka_digital.Baraka.model.Account;
 import com.al_baraka_digital.Baraka.model.User;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
