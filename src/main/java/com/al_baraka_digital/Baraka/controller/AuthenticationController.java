@@ -4,6 +4,8 @@ import com.al_baraka_digital.Baraka.dto.AuthenticationRequest;
 import com.al_baraka_digital.Baraka.dto.AuthenticationResponse;
 import com.al_baraka_digital.Baraka.dto.RegisterRequest;
 import com.al_baraka_digital.Baraka.service.AuthenticationService;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,15 +22,19 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
-    ) {
+            @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
-    ) {
+            @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthenticationResponse> refreshToken(
+            HttpServletRequest request) {
+        return ResponseEntity.ok(service.refreshToken(request));
     }
 }

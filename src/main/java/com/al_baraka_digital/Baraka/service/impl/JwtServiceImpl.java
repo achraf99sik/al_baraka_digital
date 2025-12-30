@@ -3,19 +3,15 @@ package com.al_baraka_digital.Baraka.service.impl;
 import com.al_baraka_digital.Baraka.model.User;
 import com.al_baraka_digital.Baraka.security.JwtProperties;
 import com.al_baraka_digital.Baraka.service.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +39,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateRefreshToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

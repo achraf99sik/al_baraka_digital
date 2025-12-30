@@ -11,6 +11,9 @@ import com.al_baraka_digital.Baraka.repository.UserRepository;
 import com.al_baraka_digital.Baraka.service.AccountService;
 import com.al_baraka_digital.Baraka.service.AuthenticationService;
 import com.al_baraka_digital.Baraka.service.JwtService;
+import com.al_baraka_digital.Baraka.security.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final AccountService accountService;
 
@@ -45,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setActive(true);
 
         var savedUser = userRepository.save(user);
-        
+
         if (role == Role.CLIENT) {
             accountService.createAccount(savedUser);
         }
@@ -63,9 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
-                        request.getPassword()
-                )
-        );
+                        request.getPassword()));
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         String jwtToken = jwtService.generateAccessToken(user);
@@ -74,5 +76,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    @Override
+    public AuthenticationResponse refreshToken(HttpServletRequest request) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String userEmail;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+        refreshToken = authHeader.substring(7);
+        userEmail = jwtUtil.extractUsername(refreshToken);
+        if (userEmail != null) {
+            var user = this.userRepository.findByEmail(userEmail)
+                    .orElseThrow();
+            if (jwtUtil.isTokenValid(refreshToken, user)) {
+                var accessToken = jwtService.generateAccessToken(user);
+                return AuthenticationResponse.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+            }
+        }
+        return null;
     }
 }
