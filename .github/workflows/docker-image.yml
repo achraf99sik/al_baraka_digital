@@ -27,9 +27,9 @@ jobs:
         run: |
           docker build \
             --file Dockerfile \
-            --tag your-dockerhub-achrafcap/al-baraka-app:latest \
+            --tag achrafcap/al-baraka-app:latest \
             .
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push your-dockerhub-achrafcap/al-baraka-app:latest
+          docker push achrafcap/al-baraka-app:latest
