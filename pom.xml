@@ -138,5 +138,11 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<distributionManagement>
+	    <repository>
+	        <id>github</id>
+	        <name>GitHub Packages</name>
+	        <url>https://maven.pkg.github.com/achraf99sik/al_baraka_digital</url>
+	    </repository>
+	</distributionManagement>
 </project>
