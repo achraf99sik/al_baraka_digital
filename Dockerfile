@@ -3,7 +3,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-COPY .env .env
+COPY .env.example .env
 
 RUN mvn clean package -DskipTests
 
